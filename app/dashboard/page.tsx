@@ -20,6 +20,32 @@ export default function DashboardPage() {
 
     const [completion, setCompletion] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+
+    const applyTemplate = (templateName: string) => {
+        if (templateName === "dakwah") {
+            setVideoType("educational")
+            setTone("casual")
+            setDuration("60s")
+            setAudience("Milenial & Gen Z")
+            setTopic("Menjaga lisan dan jejak digital di media sosial")
+            setKeywords("dakwah modern, self-reminder, tech, cinematic")
+        } else if (templateName === "promo") {
+            setVideoType("marketing")
+            setTone("persuasive")
+            setDuration("30s")
+            setAudience("Content Creator")
+            setTopic("Promo diskon 50% layanan hosting web islami")
+            setKeywords("diskon, hosting, cepat, aman, ramadhan sale")
+        } else if (templateName === "tech") {
+            setVideoType("educational")
+            setTone("formal")
+            setDuration("60s")
+            setAudience("Programmer Pemula")
+            setTopic("Kenapa harus belajar Next.js di tahun 2026")
+            setKeywords("coding, tutorial, react, turbopack, tech-savvy")
+        }
+    }
+
     const [error, setError] = useState("")
 
     // Ref buat auto-scroll teleprompter
@@ -77,9 +103,13 @@ export default function DashboardPage() {
                 const chunk = decoder.decode(value, { stream: true });
                 setCompletion((prev) => prev + chunk);
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Gagal streaming:", error);
-            setError(error.message || "Terjadi kesalahan sistem. Coba lagi nanti.");
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError("Terjadi kesalahan sistem. Coba lagi nanti.");
+            }
         } finally {
             setIsLoading(false);
         }
@@ -128,6 +158,19 @@ export default function DashboardPage() {
                         <div className="space-y-1">
                             <h1 className="text-2xl font-bold text-slate-900">Create New Script</h1>
                             <p className="text-sm text-slate-500">Generate storyboard & scene breakdown secara instan.</p>
+                            {/* Quick Templates (Bonus Point Fitur) */}
+                        <div className="flex flex-wrap gap-2 pt-2">
+                            <span className="text-xs font-semibold text-slate-500 py-1.5 mr-1">Templates:</span>
+                            <Button type="button" variant="outline" size="sm" onClick={() => applyTemplate("dakwah")} className="h-7 text-xs rounded-full bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100">
+                                🕌 Dakwah Digital
+                            </Button>
+                            <Button type="button" variant="outline" size="sm" onClick={() => applyTemplate("promo")} className="h-7 text-xs rounded-full bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
+                                🚀 Promo Sales
+                            </Button>
+                            <Button type="button" variant="outline" size="sm" onClick={() => applyTemplate("tech")} className="h-7 text-xs rounded-full bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">
+                                💻 Tech Edu
+                            </Button>
+                        </div>
                         </div>
 
                         <Card className="shadow-sm border-slate-200">
@@ -206,7 +249,7 @@ export default function DashboardPage() {
 
                     {/* Output Section */}
                     <div className="xl:col-span-7 flex flex-col">
-                        <Card className="flex-grow bg-[#0A0A0A] border-slate-800 shadow-2xl flex flex-col overflow-hidden ring-1 ring-white/10 min-h-[600px] rounded-2xl">
+                        <Card className="grow bg-[#0A0A0A] border-slate-800 shadow-2xl flex flex-col overflow-hidden ring-1 ring-white/10 min-h-150 rounded-2xl">
                             <CardHeader className="border-b border-slate-800/60 bg-[#111111]/80 backdrop-blur px-6 py-4 flex flex-row items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <LayoutTemplate className="w-5 h-5 text-purple-400" />
@@ -224,7 +267,7 @@ export default function DashboardPage() {
 
                             <CardContent
                                 ref={scrollRef}
-                                className="flex-grow p-6 relative overflow-y-auto max-h-[550px] scroll-smooth"
+                                className="grow p-6 relative overflow-y-auto max-h-137.5 scroll-smooth"
                             >
                                 {error && (
                                     <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
@@ -245,7 +288,7 @@ export default function DashboardPage() {
                                             <Video className="w-8 h-8 text-slate-600" />
                                         </div>
                                         <p className="text-slate-400 font-medium">Ready to Visualize</p>
-                                        <p className="text-slate-600 text-xs mt-1 max-w-[250px] leading-relaxed">Input ide lu dan biarkan AI menyusun struktur video profesional.</p>
+                                        <p className="text-slate-600 text-xs mt-1 max-w-62.5 leading-relaxed">Input ide lu dan biarkan AI menyusun struktur video profesional.</p>
                                     </div>
                                 ) : (
                                     <div className="text-slate-200 font-mono text-xs md:text-sm leading-relaxed whitespace-pre-wrap">
